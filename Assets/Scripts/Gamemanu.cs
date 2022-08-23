@@ -10,4 +10,8 @@ public class Gamemanu : MonoBehaviour
     {
         pauseMenu.SetActive(true);
     }
+    public void ResumeGame()
+    {
+        pauseMenu.SetActive(false);
+    }
 }
