@@ -5,7 +5,7 @@ using UnityEngine;
 
 public enum StateType
 {
-    Idle, Patrol, Search, Chase, React, Grab
+    Idle, Patrol, Chase, React, Attack
 }
 //状态类别
 [Serializable]
@@ -14,9 +14,12 @@ public class Parameter
     public float moveSpeed;
     public float chaseSpeed;
     public float idleTime;
-    public float searchRange;
     public Transform[] patrolPoints;
     public Transform[] chasePoints;
+    public Transform target;
+    public LayerMask targetLayer;
+    public Transform attackPoint;
+    public float attackArea;
     public Animator animator;
 }
 public class FSM : MonoBehaviour
@@ -31,16 +34,15 @@ public class FSM : MonoBehaviour
     {
         states.Add(StateType.Idle, new IdleState(this));
         states.Add(StateType.Patrol, new PatrolState(this));
-        states.Add(StateType.Search, new SearchState(this));
         states.Add(StateType.Chase, new ChaseState(this));
         states.Add(StateType.React, new ReactState(this));
-        states.Add(StateType.Grab, new GrabState(this));
+        states.Add(StateType.Attack, new AttackState(this));
 
         TransitionState(StateType.Idle);
 
         parameter.animator = GetComponent<Animator>();
     }
-    //注册状态到状态机, 默认状态为Idle, 获取动画控制器
+    //注册状态到状态机， 默认状态为Idle， 获取动画控制器
 
     // Update is called once per frame
     void Update()
@@ -50,7 +52,9 @@ public class FSM : MonoBehaviour
     public void TransitionState(StateType type)
     {
         if (currentState != null)
+        {
             currentState.OnExit();
+        }
         currentState = states[type];
         currentState.OnEnter();
     }
@@ -61,7 +65,7 @@ public class FSM : MonoBehaviour
         if (target != null)
         {
             if(transform.position.x > target.position.x)
-                    {
+            {
                 transform.localScale = new Vector3(-1, 1, 1);
             }
             else if(transform.position.x < target.position.x)
@@ -71,4 +75,25 @@ public class FSM : MonoBehaviour
         }
     }
     //如有目标，朝向目标
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+        if (other.CompareTag("Player"))
+            {
+            parameter.target = other.transform;
+            }
+    }
+    //视线中如有玩家，玩家变为目标
+
+    private void OnTriggerExit2D(Collider2D other)
+    {
+        if (other.CompareTag("Player"))
+        {
+            parameter.target = null;
+        }
+    }
+    //视线中丢失玩家，失去目标
+    private void OnDrawGizmos()
+    {
+        Gizmos.DrawWireSphere(parameter.attackPoint.position, parameter.attackArea);
+    }
 }
