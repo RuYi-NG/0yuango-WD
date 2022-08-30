@@ -102,6 +102,10 @@ public class ChaseState : IState
                 parameter.target.position, parameter.chaseSpeed * Time.deltaTime);
             //×·×ÙÄ¿±ê
         }
+        else
+        {
+            manager.TransitionState(StateType.Search);
+        }
         if(Physics2D.OverlapCircle(parameter.attackPoint.position, parameter.attackArea, parameter.targetLayer))
         {
             manager.TransitionState(StateType.Attack);
@@ -114,6 +118,41 @@ public class ChaseState : IState
     }
 }
 
+public class SearchState : IState
+{
+    private FSM manager;
+    private Parameter parameter;
+    private float timer;
+
+    public SearchState(FSM manager)
+    {
+        this.manager = manager;
+        this.parameter = manager.parameter;
+    }
+    public void OnEnter()
+    {
+        parameter.animator.Play("Walk");
+    }
+    public void OnUpdate(){
+        if (manager.transform.localScale.x == 1)
+        {
+            manager.transform.position += manager.transform.right * Time.deltaTime * parameter.moveSpeed;
+        }
+        else
+        {
+            manager.transform.position -= manager.transform.right * Time.deltaTime * parameter.moveSpeed;
+        }
+
+        if (parameter.target != null)
+        {
+            manager.TransitionState(StateType.Chase);
+        }
+    }
+    public void OnExit()
+    {
+
+    }
+}
 public class ReactState : IState
 {
     private FSM manager;

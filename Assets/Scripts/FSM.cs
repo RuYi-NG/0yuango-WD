@@ -5,7 +5,7 @@ using UnityEngine;
 
 public enum StateType
 {
-    Idle, Patrol, Chase, React, Attack
+    Idle, Patrol, Chase, React, Attack, Search
 }
 //×´Ì¬Àà±ð
 [Serializable]
@@ -37,6 +37,7 @@ public class FSM : MonoBehaviour
         states.Add(StateType.Chase, new ChaseState(this));
         states.Add(StateType.React, new ReactState(this));
         states.Add(StateType.Attack, new AttackState(this));
+        states.Add(StateType.Search, new SearchState(this));
 
         TransitionState(StateType.Idle);
 
