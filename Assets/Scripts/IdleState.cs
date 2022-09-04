@@ -7,7 +7,6 @@ public class IdleState : IState
     private FSM manager;
     private Parameter parameter;
     private float timer;
-
     public IdleState(FSM manager)
     {
         this.manager = manager;
@@ -20,13 +19,9 @@ public class IdleState : IState
     public void OnUpdate()
     {
         timer += Time.deltaTime;
-        if(parameter.target != null)
-        {
-            manager.TransitionState(StateType.Chase);
-        }
         if (timer >= parameter.idleTime)
         {
-            manager.TransitionState(StateType.Patrol); //计时器大于设置待机时间重新进入巡逻状态
+            manager.TransitionState(StateType.Search); //计时器大于设置待机时间重新进入搜索状态
         }
     }
     public void OnExit()
@@ -40,6 +35,7 @@ public class PatrolState : IState
     private FSM manager;
     private Parameter parameter;
     private int patrolPosition;
+    private float timer;
 
     public PatrolState(FSM manager)
     {
@@ -55,7 +51,7 @@ public class PatrolState : IState
         manager.FlipTo(parameter.patrolPoints[patrolPosition]); //面朝巡逻点
 
         manager.transform.position = Vector2.MoveTowards(manager.transform.position, 
-            parameter.patrolPoints[patrolPosition].position, parameter.moveSpeed * Time.deltaTime);
+            parameter.patrolPoints[patrolPosition].position, parameter.patrolSpeed * Time.deltaTime);
 
         if (parameter.target != null)
         {
@@ -64,8 +60,22 @@ public class PatrolState : IState
 
         if (Vector2.Distance(manager.transform.position, parameter.patrolPoints[patrolPosition].position)< .1f)
         {
-            manager.TransitionState(StateType.Idle);
-        } 
+            parameter.patrolSpeed = 0f;
+            timer += Time.deltaTime;
+        }
+
+        if (timer >= parameter.idleTime)
+        {
+            timer = 0;
+            parameter.patrolSpeed = 0.6f;
+            patrolPosition++; //前往数组中的下一个巡逻点
+
+        }
+
+        if (patrolPosition >= parameter.patrolPoints.Length)
+        {
+            patrolPosition = 0; //超出数组范围则设为0，循环至第一个点
+        }
     }
     public void OnExit()
     {
@@ -82,7 +92,6 @@ public class ChaseState : IState
 {
     private FSM manager;
     private Parameter parameter;
-    private float timer;
 
     public ChaseState(FSM manager)
     {
@@ -102,7 +111,7 @@ public class ChaseState : IState
                 parameter.target.position, parameter.chaseSpeed * Time.deltaTime);
             //追踪目标
         }
-        else
+        if (parameter.target == null)
         {
             manager.TransitionState(StateType.Search);
         }
@@ -122,7 +131,6 @@ public class SearchState : IState
 {
     private FSM manager;
     private Parameter parameter;
-    private float timer;
 
     public SearchState(FSM manager)
     {
@@ -136,11 +144,11 @@ public class SearchState : IState
     public void OnUpdate(){
         if (manager.transform.localScale.x == 1)
         {
-            manager.transform.position += manager.transform.right * Time.deltaTime * parameter.moveSpeed;
+            manager.transform.position += manager.transform.right * Time.deltaTime * parameter.searchSpeed;
         }
         else
         {
-            manager.transform.position -= manager.transform.right * Time.deltaTime * parameter.moveSpeed;
+            manager.transform.position -= manager.transform.right * Time.deltaTime * parameter.searchSpeed;
         }
 
         if (parameter.target != null)
@@ -186,6 +194,7 @@ public class AttackState : IState
     private FSM manager;
     private Parameter parameter;
     private AnimatorStateInfo info;
+    [SerializeField] private HealthController healthController = GameObject.Find("Mainchar").GetComponent<HealthController>();
 
     public AttackState(FSM manager)
     {
@@ -200,6 +209,8 @@ public class AttackState : IState
     {
         // info = parameter.animator.GetCurrentAnimatorStateInfo(0);
         // if(info.normalizedTime >= .95f)
+        healthController.currentPlayerHealth -= manager.parameter.attackDamage;
+        healthController.TakeDamage();  
         manager.TransitionState(StateType.Idle);
     }
     public void OnExit()
