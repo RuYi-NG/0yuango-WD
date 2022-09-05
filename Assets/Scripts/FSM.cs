@@ -11,7 +11,8 @@ public enum StateType
 [Serializable]
 public class Parameter
 {
-    public float moveSpeed;
+    public float patrolSpeed;
+    public float searchSpeed;
     public float chaseSpeed;
     public float idleTime;
     public Transform[] patrolPoints;
@@ -20,6 +21,7 @@ public class Parameter
     public LayerMask targetLayer;
     public Transform attackPoint;
     public float attackArea;
+    public float attackDamage;
     public Animator animator;
 }
 public class FSM : MonoBehaviour
@@ -39,11 +41,11 @@ public class FSM : MonoBehaviour
         states.Add(StateType.Attack, new AttackState(this));
         states.Add(StateType.Search, new SearchState(this));
 
-        TransitionState(StateType.Idle);
+        TransitionState(StateType.Patrol);
 
         parameter.animator = GetComponent<Animator>();
     }
-    //注册状态到状态机， 默认状态为Idle， 获取动画控制器
+    //注册状态到状态机， 默认状态为Patrol， 获取动画控制器
 
     // Update is called once per frame
     void Update()
