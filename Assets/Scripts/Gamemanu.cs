@@ -1,15 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Audio;
 
 public class Gamemanu : MonoBehaviour
 {
     public GameObject pauseMenu;
     public GameObject optionMenu;
     public GameObject loadMenu;
-    public AudioMixer audioMixer;
-
     //暂停调出菜单
     public void PauseGame()
     {
@@ -48,9 +45,5 @@ public class Gamemanu : MonoBehaviour
         loadMenu.SetActive(false);
 
     }
-    //调整游戏音量
-    public void SetVolume(float value)
-    {
-        audioMixer.SetFloat("MainVolume", value);
-    }
+
 }
