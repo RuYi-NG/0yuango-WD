@@ -1320,8 +1320,9 @@ GameObject:
   - component: {fileID: 1846131559}
   - component: {fileID: 1846131558}
   - component: {fileID: 1846131557}
+  - component: {fileID: 1846131560}
   m_Layer: 0
-  m_Name: "\u66F3\u5149\u5F39"
+  m_Name: twinkle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1414,6 +1415,19 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 12
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1846131560
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1846131556}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a8308c85a08bb4f429e3d0a79a4bb1d6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  twinkle: {fileID: 1846131556}
 --- !u!1 &1850213630
 GameObject:
   m_ObjectHideFlags: 0
