@@ -76,16 +76,17 @@ public class charcontroller : MonoBehaviour
     }
     void GroundMovement() 
     {
+        float Scalex = Mathf.Abs(gameObject.transform.localScale.x);
         float horizontalmove = joystick.Horizontal;
         rb.velocity = new Vector2(horizontalmove * speed * Time.deltaTime, rb.velocity.y);
 
         if (horizontalmove > 0f) 
         {
-            transform.localScale = new Vector3(1, 1, 1);
+            transform.localScale = new Vector3(Scalex * -1, gameObject.transform.localScale.y * 1, gameObject.transform.localScale.z * 1);
         }
         if (horizontalmove < 0f)
         {
-            transform.localScale = new Vector3(-1, 1, 1);
+            transform.localScale = new Vector3(Scalex * 1, gameObject.transform.localScale.y * 1, gameObject.transform.localScale.z * 1);
         }
     }
     public void Hide()

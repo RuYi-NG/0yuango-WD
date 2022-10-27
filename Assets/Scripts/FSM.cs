@@ -65,15 +65,16 @@ public class FSM : MonoBehaviour
 
     public void FlipTo(Transform target)
     {
+        float Scalex = Mathf.Abs(gameObject.transform.localScale.x);
         if (target != null)
         {
             if(transform.position.x > target.position.x)
             {
-                transform.localScale = new Vector3(-1, 1, 1);
+                transform.localScale = new Vector3(Scalex * -1, gameObject.transform.localScale.y * 1, gameObject.transform.localScale.z * 1);
             }
             else if(transform.position.x < target.position.x)
             {
-                transform.localScale = new Vector3(1, 1, 1);
+                transform.localScale = new Vector3(Scalex * 1, gameObject.transform.localScale.y * 1, gameObject.transform.localScale.z * 1);
             }
         }
     }
